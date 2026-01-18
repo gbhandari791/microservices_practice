@@ -1,0 +1,26 @@
+server:
+  port: 8086
+
+spring:
+
+  application:
+    name: AUTH-SERVICE
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/usermicroservice
+    username: root
+    password: root
+    driver-class-name: com.mysql.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+  config:
+    import:
+      optional:configserver:http://localhost:8085
+
+#JWT Configuration
+jwt:
+  secret: my_secret_key_1234567890_microservice
+  expiration: 36000000
