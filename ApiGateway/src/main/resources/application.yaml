@@ -9,6 +9,11 @@ spring:
       server:
         webflux:
           routes:
+            - id: AUTH-SERVICE
+              uri: lb://AUTH-SERVICE
+              predicates:
+                - Path=/auth/**
+
             - id: USER-SERVICE
               uri: lb://USER-SERVICE
               predicates:
@@ -18,16 +23,22 @@ spring:
                   args:
                     redis-rate-limiter.replenishRate: 2
                     redis-rate-limiter.burstCapacity: 2
+                - name: JwtAuthFilter
 
             - id: HOTEL-SERVICE
               uri: lb://HOTEL-SERVICE
               predicates:
                 - Path=/hotel/**, /staff/**
+              filters:
+                - name: JwtAuthFilter
 
             - id: RATING-SERVICE
               uri: lb://RATING-SERVICE
               predicates:
                 - Path=/rating/**
+              filters:
+                - name: JwtAuthFilter
+
 
 server:
   port: 8084
@@ -40,3 +51,8 @@ eureka:
     register-with-eureka: true
     service-url:
       defaultZone: http://localhost:8761/eureka
+
+#JWT Configuration
+jwt:
+  secret: my_secret_key_1234567890_microservice
+  expiration: 36000000
